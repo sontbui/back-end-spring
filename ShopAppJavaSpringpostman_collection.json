@@ -1,0 +1,2392 @@
+{
+	"info": {
+		"_postman_id": "8ae64cb9-11c7-49de-adb1-57d3ac527cec",
+		"name": "ShopAppJavaSpring",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33294672"
+	},
+	"item": [
+		{
+			"name": "categories",
+			"item": [
+				{
+					"name": "get all categories of page 1",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.sendRequest(\"https://postman-echo.com/get\", function (err, response) {\r",
+									"    console.log(response.json());\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// test status code is 200\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"// test responese data\r",
+									"pm.test(\"Data not undefined\", function() {\r",
+									"    // get data\r",
+									"    let dataList = pm.response.json().data;\r",
+									"    for(let data of dataList) {\r",
+									"        pm.expect(data['id']).not.equal(undefined);\r",
+									"        pm.expect(data['name']).not.equal(undefined);\r",
+									"    }\r",
+									"})\r",
+									"\r",
+									"// test res time < 1000ms\r",
+									"pm.test(\"Response time is less than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"// test unique ID\r",
+									"pm.test(\"All ids are unique\", function () {\r",
+									"    let dataList = pm.response.json().data;\r",
+									"    let idList = dataList.map(item => item.id);\r",
+									"    let uniqueIdList = [...new Set(idList)];\r",
+									"    pm.expect(uniqueIdList).to.have.lengthOf(idList.length);\r",
+									"});\r",
+									"\r",
+									"// test the length of category name below 255 characters\r",
+									"pm.test(\"Names are within the length limit\", function () {\r",
+									"    let dataList = pm.response.json().data;\r",
+									"    dataList.forEach(data => {\r",
+									"        pm.expect(data.name.length).to.be.below(256);\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"// test status code is 500\r",
+									"pm.test(\"Status code is 500\", function () {\r",
+									"    pm.response.to.have.status(500);\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PREFIX}}categories?page=1&limit=12",
+							"host": [
+								"{{API_PREFIX}}categories"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "12"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get category by id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// test status code \r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"// test responese data\r",
+									"pm.test(\"Data not undefined\", function() {\r",
+									"    // get data\r",
+									"    let data = pm.response.json().data;\r",
+									"        pm.expect(data['id']).not.equal(undefined);\r",
+									"        pm.expect(data['name']).not.equal(undefined);\r",
+									"})\r",
+									"\r",
+									"// test res time < 1000ms\r",
+									"pm.test(\"Response time is less than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"// test the length of category name below 255 characters\r",
+									"pm.test(\"Names are within the length limit\", function () {\r",
+									"    let data = pm.response.json().data;\r",
+									"        pm.expect(data.name.length).to.be.below(256);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"// test status code is 500\r",
+									"pm.test(\"Status code is 500\", function () {\r",
+									"    pm.response.to.have.status(500);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PREFIX}}categories/0",
+							"host": [
+								"{{API_PREFIX}}categories"
+							],
+							"path": [
+								"0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "post a create category with name",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// status code\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// test res message\r",
+									"pm.test(\"Message is correct\", function () {\r",
+									"    let responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson.message).to.eql(\"Create category successfully\");\r",
+									"});\r",
+									"\r",
+									"// test res status\r",
+									"pm.test(\"Status is OK\", function () {\r",
+									"    let responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson.status).to.eql(\"OK\");\r",
+									"});\r",
+									"\r",
+									"// test res data type\r",
+									"pm.test(\"Response data is correct\", function () {\r",
+									"    let responseData = pm.response.json().data;\r",
+									"    pm.expect(responseData).to.have.property('id').that.is.a('number').and.to.be.above(0);\r",
+									"    pm.expect(responseData).to.have.property('name').that.is.a('string').and.to.not.be.empty;\r",
+									"});\r",
+									"\r",
+									"// test res time less than 1000ms\r",
+									"pm.test(\"Response time is less than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"// test status code Internal Server Error 500\r",
+									"pm.test(\"Status code is 500\", function () {\r",
+									"    pm.response.to.have.status(500);\r",
+									"});\r",
+									"\r",
+									"// test duplicate name \r",
+									"pm.test(\"Error duplicate name\", function () {\r",
+									"    let responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson.message).to.include(\"could not execute statement\");\r",
+									"    pm.expect(responseJson.message).to.include(\"Duplicate entry\");\r",
+									"    pm.expect(responseJson.message).to.include(\"for key 'categories.name'\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJwaG9uZU51bWJlciI6IjAxMjM0NTY3ODkiLCJ1c2VySWQiOjE0LCJzdWIiOiIwMTIzNDU2Nzg5IiwiZXhwIjoxNzE4ODgyODc3fQ.LMk7QjdQALcV19QvK9UEzPGOMZFd-XNnJWIIwxaKmWQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Đồ điện tử\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX}}categories",
+							"host": [
+								"{{API_PREFIX}}categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update category by id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// status code",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"// test res message",
+									"pm.test(\"Message is correct\", function () {",
+									"    let responseJson = pm.response.json();",
+									"    pm.expect(responseJson.message).to.eql(\"Update category successfully\");",
+									"});",
+									"",
+									"// test res data type",
+									"pm.test(\"Response data is correct\", function () {",
+									"    let responseData = pm.response.json().data;",
+									"    pm.expect(responseData).to.have.property('id').that.is.a('number').and.to.be.above(0);",
+									"    pm.expect(responseData).to.have.property('name').that.is.a('string').and.to.not.be.empty;",
+									"});",
+									"",
+									"// test res time less than 1000ms",
+									"pm.test(\"Response time is less than 1000ms\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+									"});",
+									"",
+									"// test status code Internal Server Error 500",
+									"pm.test(\"Status code is 500\", function () {",
+									"    pm.response.to.have.status(500);",
+									"});",
+									"",
+									"// test duplicate name ",
+									"pm.test(\"Error duplicate name\", function () {",
+									"    let responseJson = pm.response.json();",
+									"    pm.expect(responseJson.message).to.include(\"could not execute statement\");",
+									"    pm.expect(responseJson.message).to.include(\"Duplicate entry\");",
+									"    pm.expect(responseJson.message).to.include(\"for key 'categories.name'\");",
+									"});",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJwaG9uZU51bWJlciI6IjAxMjM0NTY3ODkiLCJ1c2VySWQiOjE0LCJzdWIiOiIwMTIzNDU2Nzg5IiwiZXhwIjoxNzE4ODgyODc3fQ.LMk7QjdQALcV19QvK9UEzPGOMZFd-XNnJWIIwxaKmWQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Tai nghe\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX}}categories/1",
+							"host": [
+								"{{API_PREFIX}}categories"
+							],
+							"path": [
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "test delete category by id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// status code\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// test res message\r",
+									"pm.test(\"Message is correct\", function () {\r",
+									"    let responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson.message).to.eql(\"Delete category successfully\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Status is OK\", function () {\r",
+									"    let responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson.status).to.eql(\"OK\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"// test res time less than 1000ms\r",
+									"pm.test(\"Response time is less than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"// test status code Internal Server Error 500\r",
+									"pm.test(\"Status code is 500\", function () {\r",
+									"    pm.response.to.have.status(500);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJwaG9uZU51bWJlciI6IjAxMjM0NTY3ODkiLCJ1c2VySWQiOjE0LCJzdWIiOiIwMTIzNDU2Nzg5IiwiZXhwIjoxNzE4ODgyODc3fQ.LMk7QjdQALcV19QvK9UEzPGOMZFd-XNnJWIIwxaKmWQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX}}categories/13",
+							"host": [
+								"{{API_PREFIX}}categories"
+							],
+							"path": [
+								"13"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "products",
+			"item": [
+				{
+					"name": "test get all products",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// test status code \r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"// test responese data\r",
+									"pm.test(\"Data not undefined\", function() {\r",
+									"    // get data\r",
+									"    let dataList = pm.response.json().data.products;\r",
+									"    for(let data of dataList) {\r",
+									"        pm.expect(data['id']).not.equal(undefined);\r",
+									"        pm.expect(data['name']).not.equal(undefined);\r",
+									"    }\r",
+									"})\r",
+									"\r",
+									"// test res time < 1000ms\r",
+									"pm.test(\"Response time is less than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"// test unique ID\r",
+									"pm.test(\"All ids are unique\", function () {\r",
+									"    let dataList = pm.response.json().data.products;\r",
+									"    let idList = dataList.map(item => item.id);\r",
+									"    let uniqueIdList = [...new Set(idList)];\r",
+									"    pm.expect(uniqueIdList).to.have.lengthOf(idList.length);\r",
+									"});\r",
+									"\r",
+									"// test the length of product name below 255 characters\r",
+									"pm.test(\"Names are within the length limit\", function () {\r",
+									"    let dataList = pm.response.json().data.products;\r",
+									"    dataList.forEach(data => {\r",
+									"        pm.expect(data.name.length).to.be.below(256);\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PREFIX}}products",
+							"host": [
+								"{{API_PREFIX}}products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{API_PREFIX}}products/favorite-products",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_TOKEN\n}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX}}products/favorite-products",
+							"host": [
+								"{{API_PREFIX}}products"
+							],
+							"path": [
+								"favorite-products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{API_PREFIX}}products/imageFile",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PREFIX}}products/images/0d83d40d-78e9-4c7d-80ee-3b5b68003104_002.jpg",
+							"host": [
+								"{{API_PREFIX}}products"
+							],
+							"path": [
+								"images",
+								"0d83d40d-78e9-4c7d-80ee-3b5b68003104_002.jpg"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "test get product by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// test status code \r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"// test responese data\r",
+									"pm.test(\"Test response data\", function() {\r",
+									"    // get data\r",
+									"    let data = pm.response.json().data;\r",
+									"        pm.expect(data['id']).not.equal(undefined);\r",
+									"        pm.expect(data['name']).not.equal(undefined);\r",
+									"        pm.expect(data['price']).not.equal(undefined);\r",
+									"})\r",
+									"\r",
+									"// test unique id image\r",
+									"pm.test(\"All ids are unique\", function () {\r",
+									"  let data = pm.response.json().data.product_images; \r",
+									"  let idSet = new Set(data.map(image => image.id));\r",
+									"  pm.expect(idSet.size).to.equal(data.length);\r",
+									"});\r",
+									"\r",
+									"// test name of product\r",
+									"pm.test(\"Names are within the length limit\", function () {\r",
+									"  let data = pm.response.json().data;\r",
+									"    pm.expect(data.name.length).to.be.below(256);\r",
+									"});\r",
+									"\r",
+									"// test res time below 1000ms\r",
+									"pm.test(\"Response time is less than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Status code is 500\", function () {\r",
+									"    pm.response.to.have.status(500);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX}}products/5888",
+							"host": [
+								"{{API_PREFIX}}products"
+							],
+							"path": [
+								"5888"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "test list products by id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// check res array \r",
+									"pm.test(\"Response is an array\", function () {\r",
+									"  pm.expect(pm.response.json().data).to.be.an('array');\r",
+									"});\r",
+									"\r",
+									"// test properties of res return\r",
+									"pm.test(\"Each product has required properties\", function () {\r",
+									"  pm.response.json().data.forEach(product => {\r",
+									"    pm.expect(product).to.have.property('id');\r",
+									"    pm.expect(product).to.have.property('name');\r",
+									"    pm.expect(product).to.have.property('price');\r",
+									"    pm.expect(product).to.have.property('thumbnail');\r",
+									"    pm.expect(product).to.have.property('description');\r",
+									"    pm.expect(product).to.have.property('category');\r",
+									"    pm.expect(product.category).to.have.property('id');\r",
+									"    pm.expect(product.category).to.have.property('name');\r",
+									"    pm.expect(product).to.have.property('productImages');\r",
+									"  });\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Product names are not empty\", function () {\r",
+									"  pm.response.json().data.forEach(product => {\r",
+									"    pm.expect(product.name.trim()).to.not.be.empty;\r",
+									"  });\r",
+									"});\r",
+									"\r",
+									"// test res time below 1000ms\r",
+									"pm.test(\"Response time is less than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Status code is 500\", function () {\r",
+									"  pm.response.to.have.status(500);\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PREFIX}}products/by-ids?ids=0,0",
+							"host": [
+								"{{API_PREFIX}}products"
+							],
+							"path": [
+								"by-ids"
+							],
+							"query": [
+								{
+									"key": "ids",
+									"value": "0,0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "test delete product by id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has success message\", function () {\r",
+									"  pm.expect(pm.response.json().message).to.include(\"deleted successfully\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response data is null\", function () {\r",
+									"  pm.expect(pm.response.json().data).to.be.null;\r",
+									"});\r",
+									"\r",
+									"// test res time below 1000ms\r",
+									"pm.test(\"Response time is less than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"}); "
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJwaG9uZU51bWJlciI6IjEyMzQ1Njc4OTEwIiwidXNlcklkIjoxMiwic3ViIjoiMTIzNDU2Nzg5MTAiLCJleHAiOjE3MTg5ODMyMzR9.cppIyu-6n5T6VZwFCnWxQ6jhdxrAhF7LGrHJ7I3SR24",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX}}products/5812",
+							"host": [
+								"{{API_PREFIX}}products"
+							],
+							"path": [
+								"5812"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "test post a create product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"  pm.response.to.have.status(200); \r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has success message\", function () {\r",
+									"  pm.expect(pm.response.json().message).to.include(\"Create new product successfully\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response data is an object\", function () {\r",
+									"  pm.expect(pm.response.json().data).to.be.an('object');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response data has required properties\", function () {\r",
+									"  const requiredProperties = [\"id\", \"name\", \"price\", \"description\", \"category\"];\r",
+									"  requiredProperties.forEach(property => {\r",
+									"    pm.expect(pm.response.json().data).to.have.property(property);\r",
+									"  });\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Product ID is a number\", function () {\r",
+									"  pm.expect(pm.response.json().data.id).to.be.a('number');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Product name is not empty\", function () {\r",
+									"  pm.expect(pm.response.json().data.name.trim()).to.not.be.empty;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Product price is a number\", function () {\r",
+									"  pm.expect(pm.response.json().data.price).to.be.a('number');\r",
+									"});\r",
+									"\r",
+									"// Optional tests (consider adding based on expectations):\r",
+									"pm.test(\"Product description is not empty\", function () {\r",
+									"  pm.expect(pm.response.json().data.description.trim()).to.not.be.empty;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Product category is an object with required properties\", function () {\r",
+									"  pm.expect(pm.response.json().data.category).to.be.an('object');\r",
+									"  pm.expect(pm.response.json().data.category).to.have.property('id');\r",
+									"  pm.expect(pm.response.json().data.category).to.have.property('name');\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"name\": \"macbook air 15 inch 2023\",\r\n\t\"price\": 812.34,\r\n\t\"description\": \"This is a test product\",\r\n\t\"category_id\": 40\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX}}products",
+							"host": [
+								"{{API_PREFIX}}products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{API_PREFIX}}products /like/id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_TOKEN\n}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"name\": \"macbook air 15 inch 2023\",\r\n\t\"price\": 812.34,\r\n\t\"description\": \"This is a test product\",\r\n\t\"category_id\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX}}products/like/10",
+							"host": [
+								"{{API_PREFIX}}products"
+							],
+							"path": [
+								"like",
+								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{API_PREFIX}}products /unlike/id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_TOKEN\n}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"name\": \"macbook air 15 inch 2023\",\r\n\t\"price\": 812.34,\r\n\t\"description\": \"This is a test product\",\r\n\t\"category_id\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX}}products/unlike/10",
+							"host": [
+								"{{API_PREFIX}}products"
+							],
+							"path": [
+								"unlike",
+								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{API_PREFIX}}products /favorites",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_TOKEN\n}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"name\": \"macbook air 15 inch 2023\",\r\n\t\"price\": 812.34,\r\n\t\"description\": \"This is a test product\",\r\n\t\"category_id\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX}}products/favorites",
+							"host": [
+								"{{API_PREFIX}}products"
+							],
+							"path": [
+								"favorites"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "test update product by id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has success message\", function () {\r",
+									"  pm.expect(pm.response.json().message).to.include(\"Update product successfully\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response data is an object\", function () {\r",
+									"  pm.expect(pm.response.json().data).to.be.an('object');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response data has required properties\", function () {\r",
+									"  const requiredProperties = [\"id\", \"name\", \"price\", \"description\", \"category\"];\r",
+									"  requiredProperties.forEach(property => {\r",
+									"    pm.expect(pm.response.json().data).to.have.property(property);\r",
+									"  });\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Product ID is a number\", function () {\r",
+									"  pm.expect(pm.response.json().data.id).to.be.a('number');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Product name is not empty\", function () {\r",
+									"  pm.expect(pm.response.json().data.name.trim()).to.not.be.empty;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Product price is a number\", function () {\r",
+									"  pm.expect(pm.response.json().data.price).to.be.a('number');\r",
+									"});\r",
+									"\r",
+									"// Optional tests (consider adding based on expectations):\r",
+									"pm.test(\"Product description is not empty\", function () {\r",
+									"  pm.expect(pm.response.json().data.description.trim()).to.not.be.empty;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Product category is an object with required properties\", function () {\r",
+									"  pm.expect(pm.response.json().data.category).to.be.an('object');\r",
+									"  pm.expect(pm.response.json().data.category).to.have.property('id');\r",
+									"  pm.expect(pm.response.json().data.category).to.have.property('name');\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Status code is 404\", function () {\r",
+									"  pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has error message\", function () {\r",
+									"  pm.expect(pm.response.json().message).to.include(\"Cannot find product\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has error message\", function () {\r",
+									"  pm.expect(pm.response.json().message).to.include(\"Cannot find category\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response data is null\", function () {\r",
+									"  pm.expect(pm.response.json().data).to.be.null;\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_TOKEN\n}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"name\": \"Fantastic Bronze Watch22\",\r\n\t\"price\": 89.89,\r\n\t\"description\": \"Voluptas nemo quis doloribus nisi optio culpa.22\",\r\n\t\"category_id\": 4\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX}}products/5838",
+							"host": [
+								"{{API_PREFIX}}products"
+							],
+							"path": [
+								"5838"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{API_PREFIX}}products/uploads/{id}",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_TOKEN\n}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "files",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{API_PREFIX}}products/uploads/81",
+							"host": [
+								"{{API_PREFIX}}products"
+							],
+							"path": [
+								"uploads",
+								"81"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{API_PREFIX}} generateFakeProducts",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{API_PREFIX}}products/generateFakeProducts",
+							"host": [
+								"{{API_PREFIX}}products"
+							],
+							"path": [
+								"generateFakeProducts"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "test register user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"  pm.response.to.have.status(200); \r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has success message\", function () {\r",
+									"  pm.expect(pm.response.json().message).to.include(\"Đăng ký tài khoản thành công\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response data has required properties\", function () {\r",
+									"  const requiredProperties = [\"id\", \"fullname\", \"phone_number\", \"address\", \"is_active\", \"date_of_birth\", \"facebook_account_id\", \"google_account_id\", \"role\"];\r",
+									"  requiredProperties.forEach(property => {\r",
+									"    pm.expect(pm.response.json().data).to.have.property(property);\r",
+									"  });\r",
+									"});\r",
+									"\r",
+									"pm.test(\"User ID is a number\", function () {\r",
+									"  pm.expect(pm.response.json().data.id).to.be.a('number');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Address is not empty\", function () {\r",
+									"  pm.expect(pm.response.json().data.address.trim()).to.not.be.empty;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Role is an object with required properties\", function () {\r",
+									"  pm.expect(pm.response.json().data.role).to.be.an('object');\r",
+									"  pm.expect(pm.response.json().data.role).to.have.property('id');\r",
+									"  pm.expect(pm.response.json().data.role).to.have.property('name');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Status code is 500\", function () {\r",
+									"  pm.response.to.have.status(500);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has error message\", function () {\r",
+									"  pm.expect(pm.response.json().message).to.include(\"Số điện thoại đã tồn tại\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response data is null\", function () {\r",
+									"  pm.expect(pm.response.json().data).to.be.null;\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"fullname\": \"Nguyen Van Yy\",\r\n    \"phone_number\": \"2234d5d6789\",\r\n    \"address\": \"Đây là user\",\r\n    \"password\": \"123456789\",\r\n    \"retype_password\": \"123456789\",\r\n    \"date_of_birth\":\"2000-10-25\",\r\n    \"facebook_account_id\": 0,\r\n    \"google_account_id\": 0,\r\n    \"role_id\": 1\r\n}\r\n\r\n// {\r\n//     \"fullname\": \"Nguyễn Văn A\",\r\n//     \"phone_number\": \"012456878\",\r\n//     \"address\": \"Nhà a ngõ b\",\r\n//     \"password\": \"123456\",\r\n//     \"retype_password\": \"123456\",\r\n//     \"date_of_birth\":\"1999-10-25\",\r\n//     \"facebook_account_id\": 0,\r\n//     \"google_account_id\": 0,\r\n//     \"role_id\": 1\r\n// }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX}}users/register",
+							"host": [
+								"{{API_PREFIX}}users"
+							],
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "test get all users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has success message\", function () {\r",
+									"  pm.expect(pm.response.json().message).to.include(\"Get user list successfully\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response data is an object\", function () {\r",
+									"  pm.expect(pm.response.json().data).to.be.an('object');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response data has users array\", function () {\r",
+									"  pm.expect(pm.response.json().data).to.have.property('users');\r",
+									"  pm.expect(pm.response.json().data.users).to.be.an('array');\r",
+									"});\r",
+									"\r",
+									"// test datatype of totalPages\r",
+									"pm.test(\"Response data has totalPages property\", function () {\r",
+									"  pm.expect(pm.response.json().data).to.have.property('totalPages');\r",
+									"  pm.expect(pm.response.json().data.totalPages).to.be.a('number');\r",
+									"});\r",
+									"\r",
+									"// Test for user object structure (consider looping through users array)\r",
+									"pm.test(\"Each user object has required properties\", function () {\r",
+									"  pm.response.json().data.users.forEach(user => {\r",
+									"    pm.expect(user).to.have.property('id');\r",
+									"    pm.expect(user).to.have.property('fullname');\r",
+									"    pm.expect(user).to.have.property('phone_number');\r",
+									"    pm.expect(user).to.have.property('address');\r",
+									"    pm.expect(user).to.have.property('is_active');\r",
+									"    pm.expect(user).to.have.property('date_of_birth');\r",
+									"    pm.expect(user.date_of_birth).to.be.a('number');\r",
+									"    pm.expect(user).to.have.property('facebook_account_id');\r",
+									"    pm.expect(user).to.have.property('google_account_id');\r",
+									"    pm.expect(user).to.have.property('role');\r",
+									"    pm.expect(user.role).to.be.an('object');\r",
+									"    pm.expect(user.role).to.have.property('id');\r",
+									"    pm.expect(user.role).to.have.property('name');\r",
+									"  });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_TOKEN\n}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"fullname\": \"Nguyen Van Y\",\r\n    \"phone_number\": \"123456789\",\r\n    \"address\": \"Đây là user\",\r\n    \"password\": \"123456789\",\r\n    \"retype_password\": \"123456789\",\r\n    \"date_of_birth\":\"2000-10-25\",\r\n    \"facebook_account_id\": 0,\r\n    \"google_account_id\": 0,\r\n    \"role_id\": 1\r\n}\r\n\r\n// {\r\n//     \"fullname\": \"Nguyễn Văn A\",\r\n//     \"phone_number\": \"012456878\",\r\n//     \"address\": \"Nhà a ngõ b\",\r\n//     \"password\": \"123456\",\r\n//     \"retype_password\": \"123456\",\r\n//     \"date_of_birth\":\"1999-10-25\",\r\n//     \"facebook_account_id\": 0,\r\n//     \"google_account_id\": 0,\r\n//     \"role_id\": 1\r\n// }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX}}users?page=0&limit=10",
+							"host": [
+								"{{API_PREFIX}}users"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "test reset password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has success message\", function () {\r",
+									"  pm.expect(pm.response.json().message).to.include(\"Reset password successfully\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response data is a string\", function () {\r",
+									"  pm.expect(pm.response.json().data).to.be.a('string');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Reset token has expected length\", function () {\r",
+									"  const expectedLength = 5; \r",
+									"  pm.expect(pm.response.json().data.length).to.equal(expectedLength);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has error message\", function () {\r",
+									"  pm.expect(pm.response.json().message).to.include(\"User not found\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response data is empty\", function () {\r",
+									"  pm.expect(pm.response.json().data).to.be.empty;\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_TOKEN\n}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": []
+						},
+						"url": {
+							"raw": "{{API_PREFIX}}users/reset-password/2",
+							"host": [
+								"{{API_PREFIX}}users"
+							],
+							"path": [
+								"reset-password",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{API_PREFIX}}block-user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJwaG9uZU51bWJlciI6IjExMjIzMzQ0IiwidXNlcklkIjozLCJzdWIiOiIxMTIyMzM0NCIsImV4cCI6MTcwNTc5NDY4OX0.s7ghuZpMskX-AB1JKJGrkW2KqmovJOcgZ6VZReTYJ_E",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{API_PREFIX}}users/block/8/1",
+							"host": [
+								"{{API_PREFIX}}users"
+							],
+							"path": [
+								"block",
+								"8",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{API_PREFIX}}details",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_TOKEN\n}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{API_PREFIX}}users/details",
+							"host": [
+								"{{API_PREFIX}}users"
+							],
+							"path": [
+								"details"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{API_PREFIX}}details/{userId}",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_TOKEN\n}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"fullname\": \"Nguyễn Văn test 11\",\r\n    \"phone_number\": \"33445566\",\r\n    \"address\": \"Nhà a ngõ b 11\",\r\n    \"password\": \"123456789\",    \r\n    \"retype_password\": \"1234567\", \r\n    \"date_of_birth\":\"2000-10-25\",\r\n    \"facebook_account_id\": 2,\r\n    \"google_account_id\": 3    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX}}users/details/5",
+							"host": [
+								"{{API_PREFIX}}users"
+							],
+							"path": [
+								"details",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "test user login / admin login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has success message\", function () {\r",
+									"  pm.expect(pm.response.json().message).to.include(\"Login successfully\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response data is an object\", function () {\r",
+									"  pm.expect(pm.response.json().data).to.be.an('object');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response data contains required properties\", function () {\r",
+									"  const requiredProperties = [\"tokenType\", \"id\", \"username\", \"roles\", \"message\", \"token\", \"refresh_token\"];\r",
+									"  requiredProperties.forEach(property => {\r",
+									"    pm.expect(pm.response.json().data).to.have.property(property);\r",
+									"  });\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Token type is Bearer\", function () {\r",
+									"  pm.expect(pm.response.json().data.tokenType).to.equal(\"Bearer\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"User ID is a number\", function () {\r",
+									"  pm.expect(pm.response.json().data.id).to.be.a('number');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Username is not empty\", function () {\r",
+									"  pm.expect(pm.response.json().data.username.trim()).to.not.be.empty;\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Roles is an array\", function () {\r",
+									"  pm.expect(pm.response.json().data.roles).to.be.an('array');\r",
+									"});\r",
+									"\r",
+									"// Optional test: Check if specific role is present (adjust based on expectations)\r",
+									"pm.test(\"User has admin role\", function () {\r",
+									"  pm.expect(pm.response.json().data.roles).to.include(\"ROLE_ADMIN\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"User is a user role\", function () {\r",
+									"  pm.expect(pm.response.json().data.roles).to.include(\"ROLE_USER\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Token and refresh token are strings\", function () {\r",
+									"  pm.expect(pm.response.json().data.token).to.be.a('string');\r",
+									"  pm.expect(pm.response.json().data.refresh_token).to.be.a('string');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "vi"
+							},
+							{
+								"key": "User-Agent",
+								"value": "mobile",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"phone_number\": \"0963101750\",\r\n    \"password\": \"123123\"    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX}}users/login",
+							"host": [
+								"{{API_PREFIX}}users"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{API_PREFIX}}users/login user8",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "vi",
+								"type": "text"
+							},
+							{
+								"key": "User-Agent",
+								"value": "mobile",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"phone_number\": \"0964896239\",\r\n    \"password\": \"123456789\"    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX}}users/login",
+							"host": [
+								"{{API_PREFIX}}users"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{API_PREFIX}}users/login-changed-password-user",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "vi",
+								"type": "text"
+							},
+							{
+								"key": "User-Agent",
+								"value": "mobile",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"phone_number\": \"0964896239\",\r\n    \"password\": \"e6fbb\"    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX}}users/login",
+							"host": [
+								"{{API_PREFIX}}users"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{API_PREFIX}}users/refreshToken",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "vi",
+								"type": "text"
+							},
+							{
+								"key": "User-Agent",
+								"value": "mobile",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"refreshToken\": \"c13e27c7-d69a-4a3b-b2fc-0bf92ce9aa5e\"  \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX}}users/refreshToken",
+							"host": [
+								"{{API_PREFIX}}users"
+							],
+							"path": [
+								"refreshToken"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{API_PREFIX}}users/login_admin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept-Language",
+								"value": "vi",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"phone_number\": \"11223344\",\r\n    \"password\": \"11223344\",\r\n    \"role_id\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX}}users/login",
+							"host": [
+								"{{API_PREFIX}}users"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "orders",
+			"item": [
+				{
+					"name": "{{API_PREFIX}}orders",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_TOKEN\n}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"user_id\": 5,\r\n  \"fullname\": \"Nguyễn Văn X\",\r\n  \"email\": \"nvxx@yahoo.com\",\r\n  \"phone_number\": \"1234456\",\r\n  \"address\": \"Nhà a ngõ B, ngách D\",\r\n  \"note\": \"Hàng dễ vỡ xin nhẹ tay\",\r\n  \"total_money\": 123.45,\r\n  \"shipping_method\": \"express\",\r\n  \"payment_method\": \"cod\",  \r\n  \"coupon_code\": \"\",\r\n  \"cart_items\": [\r\n    {\r\n      \"product_id\": 5,\r\n      \"quantity\": 7      \r\n    },\r\n    {\r\n      \"product_id\": 7,\r\n      \"quantity\": 2      \r\n    },\r\n    {\r\n      \"product_id\": 9,\r\n      \"quantity\": 3      \r\n    }    \r\n  ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX}}orders",
+							"host": [
+								"{{API_PREFIX}}orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{API_PREFIX}}orders/{id}",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_TOKEN\n}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user_id\": 1,\r\n    \"fullname\": \"Nguyễn Văn X12\",\r\n    \"email\": \"nvx2x@yahoo.com\",\r\n    \"phone_number\": \"12345566\",\r\n    \"address\": \"Nhà a ngõ B, ngách D\",\r\n    \"note\": \"Hàng dễ vỡ xin nhẹ tay\",\r\n    \"total_money\": 123.45,\r\n    \"shipping_method\": \"express\",\r\n    \"shipping_address\": \"nha a ngo b\",\r\n    \"shipping_date\": \"2023-08-05\",\r\n    \"payment_method\": \"cod\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX}}orders/5",
+							"host": [
+								"{{API_PREFIX}}orders"
+							],
+							"path": [
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{API_PREFIX}}orders/{id}",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_TOKEN\n}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{API_PREFIX}}orders/14",
+							"host": [
+								"{{API_PREFIX}}orders"
+							],
+							"path": [
+								"14"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "test get order of user by id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response has success message\", function () {\r",
+									"  pm.expect(pm.response.json().message).to.include(\"Get list of orders successfully\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response data is an array\", function () {\r",
+									"  pm.expect(pm.response.json().data).to.be.an('array');\r",
+									"});\r",
+									"\r",
+									"// test properties of order\r",
+									"pm.test(\"User object in each order has required properties\", function () {\r",
+									"  pm.response.json().data.forEach(order => {\r",
+									"    const user = order.user;\r",
+									"    pm.expect(user).to.have.property('id');\r",
+									"    pm.expect(user).to.have.property('fullName');\r",
+									"    pm.expect(user.fullName).to.be.a('string');\r",
+									"    pm.expect(user).to.have.property('phoneNumber');\r",
+									"    pm.expect(user.phoneNumber).to.be.a('string');\r",
+									"    pm.expect(user).to.have.property('address');\r",
+									"    pm.expect(user.address).to.be.a('string');\r",
+									"  });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_TOKEN\n}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PREFIX}}orders/user/1",
+							"host": [
+								"{{API_PREFIX}}orders"
+							],
+							"path": [
+								"user",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{API_PREFIX}}orders/{id}",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_TOKEN\n}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"user_id\": 1,\r\n    \"fullname\": \"Nguyễn Văn X\",\r\n    \"email\": \"nvxx@yahoo.com\",\r\n    \"phone_number\": \"1234\",\r\n    \"address\": \"Nhà a ngõ B, ngách D\",\r\n    \"note\": \"Hàng dễ vỡ xin nhẹ tay\",\r\n    \"total_money\": 123.45,\r\n    \"shipping_method\": \"express\",\r\n    \"payment_method\": \"cod\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX}}orders/14",
+							"host": [
+								"{{API_PREFIX}}orders"
+							],
+							"path": [
+								"14"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{API_PREFIX}}orders/get-orders-by-keyword",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_TOKEN\n}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PREFIX}}orders/get-orders-by-keyword?page=0&limit=10&keyword=cacban",
+							"host": [
+								"{{API_PREFIX}}orders"
+							],
+							"path": [
+								"get-orders-by-keyword"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "keyword",
+									"value": "cacban"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "order_details",
+			"item": [
+				{
+					"name": "{{API_PREFIX}}order_details",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"order_id\": 5,\r\n    \"product_id\": 1,    \r\n    \"price\": 12.33,\r\n    \"number_of_products\": 2,    \r\n    \"total_money\": 123.45,\r\n    \"color\": \"#ff00ff\"    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX}}order_details",
+							"host": [
+								"{{API_PREFIX}}order_details"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{API_PREFIX}}order_details/{id}",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"order_id\": 5,\r\n    \"product_id\": 1,\r\n    \"price\": 12.33,\r\n    \"number_of_products\": 2,    \r\n    \"total_money\": 123.45,\r\n    \"color\": \"#ff00ff\"    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX}}order_details/2",
+							"host": [
+								"{{API_PREFIX}}order_details"
+							],
+							"path": [
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{API_PREFIX}}order_details/{id}",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"order_id\": 2,\r\n    \"product_id\": 1,\r\n    \"price\": 12.33,\r\n    \"number_of_products\": 2,    \r\n    \"total_money\": 123.45,\r\n    \"color\": \"#ff00ff\"    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX}}order_details/2",
+							"host": [
+								"{{API_PREFIX}}order_details"
+							],
+							"path": [
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{API_PREFIX}}order_details/{id}",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"order_id\": 2,\r\n    \"product_id\": 1,\r\n    \"email\": \"nvxx@yahoo.com\",\r\n    \"price\": 12.33,\r\n    \"number_of_products\": 2,    \r\n    \"total_money\": 123.45,\r\n    \"color\": \"#ff00ff\"    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX}}order_details/2",
+							"host": [
+								"{{API_PREFIX}}order_details"
+							],
+							"path": [
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{API_PREFIX}}order_details/order/{order_id}",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"order_id\": 2,\r\n    \"product_id\": 1,\r\n    \"email\": \"nvxx@yahoo.com\",\r\n    \"price\": 12.33,\r\n    \"number_of_products\": 2,    \r\n    \"total_money\": 123.45,\r\n    \"color\": \"#ff00ff\"    \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX}}order_details/order/5",
+							"host": [
+								"{{API_PREFIX}}order_details"
+							],
+							"path": [
+								"order",
+								"5"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "roles",
+			"item": [
+				{
+					"name": "{{API_PREFIX}}roles",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PREFIX}}roles",
+							"host": [
+								"{{API_PREFIX}}roles"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "product_images",
+			"item": [
+				{
+					"name": "{{API_PREFIX}}product_images/{id}",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_TOKEN\n}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"ipad pro 2023\",\r\n    \"price\": 812.34,\r\n    \"thumbnail\": \"\",\r\n    \"description\": \"This is a test product\",\r\n    \"category_id\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX}}product_images/140",
+							"host": [
+								"{{API_PREFIX}}product_images"
+							],
+							"path": [
+								"140"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "comments",
+			"item": [
+				{
+					"name": "{{API_PREFIX}}comments",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PREFIX}}comments?product_id=2&user_id=8",
+							"host": [
+								"{{API_PREFIX}}comments"
+							],
+							"query": [
+								{
+									"key": "product_id",
+									"value": "2"
+								},
+								{
+									"key": "user_id",
+									"value": "8"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{API_PREFIX}}comments",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_TOKEN\n}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"product_id\": 2,\r\n    \"user_id\": 8,\r\n    \"content\": \"This is good, this is another comment\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX}}comments",
+							"host": [
+								"{{API_PREFIX}}comments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{API_PREFIX}}comments",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{JWT_TOKEN\n}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"product_id\": 2,\r\n    \"user_id\": 8,\r\n    \"content\": \"This is good, haha\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{API_PREFIX}}comments/3",
+							"host": [
+								"{{API_PREFIX}}comments"
+							],
+							"path": [
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "coupons",
+			"item": [
+				{
+					"name": "{{API_PREFIX}}coupons",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PREFIX}}coupons/calculate?couponCode=HEAVEN&totalAmount=120.0",
+							"host": [
+								"{{API_PREFIX}}coupons"
+							],
+							"path": [
+								"calculate"
+							],
+							"query": [
+								{
+									"key": "couponCode",
+									"value": "HEAVEN"
+								},
+								{
+									"key": "totalAmount",
+									"value": "120.0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "{{API_PREFIX}}coupons2",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{API_PREFIX}}coupons/calculate?couponCode=DISCOUNT20&totalAmount=201",
+							"host": [
+								"{{API_PREFIX}}coupons"
+							],
+							"path": [
+								"calculate"
+							],
+							"query": [
+								{
+									"key": "couponCode",
+									"value": "DISCOUNT20"
+								},
+								{
+									"key": "totalAmount",
+									"value": "201"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "healthcheck/health",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{API_PREFIX}}healthcheck/health",
+					"host": [
+						"{{API_PREFIX}}healthcheck"
+					],
+					"path": [
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "health",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{API_PREFIX}}actuator/health",
+					"host": [
+						"{{API_PREFIX}}actuator"
+					],
+					"path": [
+						"health"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
