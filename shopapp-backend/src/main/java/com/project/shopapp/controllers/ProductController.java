@@ -173,11 +173,9 @@ public class ProductController {
                 }
                 if (productResponses == null) {
                         Page<ProductResponse> productPage = productService
-                                        .getAllProducts(keyword, categoryId, pageRequest);
-                        // Lấy tổng số trang
+                                        .getAllProducts(keyword, categoryId, pageRequest);                      
                         totalPages = productPage.getTotalPages();
                         productResponses = productPage.getContent();
-                        // Bổ sung totalPages vào các đối tượng ProductResponse
                         for (ProductResponse product : productResponses) {
                                 product.setTotalPages(totalPages);
                         }

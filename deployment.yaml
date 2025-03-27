@@ -43,13 +43,12 @@ services:
     networks:
       - shopapp-network
 
-  #Nhớ chạy Kafka deployment trước, đảm bảo Broker và Zookeeper chạy ok
+  
   shopapp-spring-container:    
     container_name: shopapp-spring-container    
     build:
       context: .
       dockerfile: DockerfileJavaSpring      
-      #docker tag <image_id> shopapp-spring:1.0.0    
     ports:
       - 8099:8088
     environment:
