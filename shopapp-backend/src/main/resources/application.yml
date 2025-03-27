@@ -10,12 +10,7 @@ spring:
   jpa:
     show-sql: true
     hibernate:
-      ddl-auto: none #chỗ này mà sửa thành drop-create thì rất nguy
-      #ddl-auto: validate
-      #Hibernate sẽ không tạo, sửa đổi hoặc xóa bất kỳ bảng, cột hay ràng buộc nào trong cơ sở dữ liệu
-      #validate thường được sử dụng trong môi trường production
-      #Nếu có sự khác biệt giữa cấu trúc cơ sở dữ liệu và các entity class
-      #lỗi sẽ được hiển thị và yêu cầu sửa đổi cấu trúc cơ sở dữ liệu một cách thủ công
+      ddl-auto: none 
     properties:
       hibernate:
       dialect: org.hibernate.dialect.MySQL8Dialect
@@ -29,10 +24,10 @@ spring:
     encoding: UTF-8
     default-locale: en
   #flyway
-  # Đường dẫn tới thư mục chứa các script Flyway
+
   flyway:
     locations: classpath:/db/migration,classpath:/dev/db/migration
-    #Phiên bản baseline sẽ = 1 và không thực hiện bất kỳ thay đổi nào trong DB
+
     baseline-on-migrate: true
     baseline-version: 0
   data:
