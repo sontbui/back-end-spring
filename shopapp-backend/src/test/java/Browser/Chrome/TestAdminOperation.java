@@ -36,24 +36,18 @@ public class TestAdminOperation {
     // Using order
     @Test(priority = 1)
     public void TestCase25() throws InterruptedException {
-        WebDriver driver = drivers.get(drivers.size() - 1); // Lấy driver hiện tại
+        WebDriver driver = drivers.get(drivers.size() - 1); 
 
         driver.findElement(By.id("btn-login")).click();
-
-        //thao tác đăng nhập vào Admin
         Helper.login(driver, "0123456789", "123123");
         Thread.sleep(1000);
-
-        //tìm kiếm đơn hàng
         driver.findElement(By.className("form-control")).sendKeys("thuan");
         Thread.sleep(1000);
         Helper.clickElement(driver, "btn-primary", 0);
         Thread.sleep(1000);
         Helper.clickElement(driver, "btn-primary", 1);
         Thread.sleep(1000);
-
-        //chuyển đổi status đơn hàng
-        JavascriptExecutor js = (JavascriptExecutor) driver;//cuộn trang xuống 500px
+        JavascriptExecutor js = (JavascriptExecutor) driver;
         js.executeScript("window.scrollBy(0, 500)");
         Helper.selectOptionByIndex(driver, "#statusSelect", 2);
         Thread.sleep(1000);
@@ -70,12 +64,9 @@ public class TestAdminOperation {
     // Using categories
     @Test(priority = 2)
     public void TestCase26() throws InterruptedException {
-        WebDriver driver = drivers.get(drivers.size() - 1); // Lấy driver hiện tại
+        WebDriver driver = drivers.get(drivers.size() - 1);
         driver.findElement(By.id("btn-login")).click();
         Helper.login(driver, "0123456789", "123123");
-
-
-        //thao tác thêm một category
         driver.findElement(By.id("test_categories")).click();
         Thread.sleep(5000);
         driver.findElement(new By.ByClassName("btn-success")).click();
@@ -83,8 +74,6 @@ public class TestAdminOperation {
         Thread.sleep(5000);
         driver.findElement(By.className("btn-primary")).click();
         Thread.sleep(5000);
-
-        //update category
         Helper.clickElement(driver, "btn-primary", 0);
         Thread.sleep(2000);
         WebElement textField = driver.findElement(By.id("name"));
@@ -108,8 +97,6 @@ public class TestAdminOperation {
 
 
         driver.findElement(By.id("btn-login")).click();
-
-        //thao tác đăng nhập vào admin
         Helper.login(driver, "0123456789", "123123");
         Thread.sleep(1000);
 

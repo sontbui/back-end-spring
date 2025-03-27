@@ -47,7 +47,6 @@ public class UserController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int limit
     ) throws Exception{
-        // Tạo Pageable từ thông tin trang và giới hạn
         PageRequest pageRequest = PageRequest.of(
                 page, limit,
                 //Sort.by("createdAt").descending()
@@ -55,8 +54,6 @@ public class UserController {
         );
         Page<UserResponse> userPage = userService.findAll(keyword, pageRequest)
                 .map(UserResponse::fromUser);
-
-        // Lấy tổng số trang
         int totalPages = userPage.getTotalPages();
         List<UserResponse> userResponses = userPage.getContent();
         UserListResponse userListResponse = UserListResponse
@@ -71,7 +68,6 @@ public class UserController {
                 .build());
     }
     @PostMapping("/register")
-    //can we register an "admin" user ?
     public ResponseEntity<ResponseObject> createUser(
             @Valid @RequestBody UserDTO userDTO,
             BindingResult result
@@ -110,7 +106,6 @@ public class UserController {
             @Valid @RequestBody UserLoginDTO userLoginDTO,
             HttpServletRequest request
     ) throws Exception {
-        // Kiểm tra thông tin đăng nhập và sinh token
         String token = userService.login(
                 userLoginDTO.getPhoneNumber(),
                 userLoginDTO.getPassword(),
@@ -158,8 +153,6 @@ public class UserController {
 
     }
     private boolean isMobileDevice(String userAgent) {
-        // Kiểm tra User-Agent header để xác định thiết bị di động
-        // Ví dụ đơn giản:
         return userAgent.toLowerCase().contains("mobile");
     }
     @PostMapping("/details")
@@ -167,7 +160,7 @@ public class UserController {
     public ResponseEntity<ResponseObject> getUserDetails(
             @RequestHeader("Authorization") String authorizationHeader
     ) throws Exception {
-        String extractedToken = authorizationHeader.substring(7); // Loại bỏ "Bearer " từ chuỗi token
+        String extractedToken = authorizationHeader.substring(7); 
         User user = userService.getUserDetailsFromToken(extractedToken);
         return ResponseEntity.ok().body(
                 ResponseObject.builder()
@@ -204,7 +197,7 @@ public class UserController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ResponseObject> resetPassword(@Valid @PathVariable long userId){
         try {
-            String newPassword = UUID.randomUUID().toString().substring(0, 5); // Tạo mật khẩu mới
+            String newPassword = UUID.randomUUID().toString().substring(0, 5);
             userService.resetPassword(userId, newPassword);
             return ResponseEntity.ok(ResponseObject.builder()
                             .message("Reset password successfully")
