@@ -24,7 +24,7 @@ import java.util.List;
 public class OrderDetailController {
     private final OrderDetailService orderDetailService;
     private final LocalizationUtils localizationUtils;
-    //Thêm mới 1 order detail
+
     @PostMapping("")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
     public ResponseEntity<ResponseObject> createOrderDetail(
