@@ -81,9 +81,10 @@ public class JwtTokenFilter extends OncePerRequestFilter{
                 Pair.of(String.format("%s/roles**", apiPrefix), "GET"),
                 Pair.of(String.format("%s/comments**", apiPrefix), "GET"),
                 Pair.of(String.format("%s/coupons**", apiPrefix), "GET"),
-
+                Pair.of(String.format("%s/payment**", apiPrefix), "GET"),
                 Pair.of(String.format("%s/products**", apiPrefix), "GET"),
                 Pair.of(String.format("%s/categories**", apiPrefix), "GET"),
+                Pair.of(String.format("%s/chat**", apiPrefix), "GET"),
                 Pair.of(String.format("%s/users/register", apiPrefix), "POST"),
                 Pair.of(String.format("%s/users/login", apiPrefix), "POST"),
                 Pair.of(String.format("%s/users/refreshToken", apiPrefix), "POST"),
@@ -97,7 +98,8 @@ public class JwtTokenFilter extends OncePerRequestFilter{
                 Pair.of("/configuration/security","GET"),
                 Pair.of("/swagger-ui/**","GET"),
                 Pair.of("/swagger-ui.html", "GET"),
-                Pair.of("/swagger-ui/index.html", "GET")
+                Pair.of("/swagger-ui/index.html", "GET"),
+                Pair.of("/ws-chat", "GET") // Thêm WebSocket endpoint
         );
 
         String requestPath = request.getServletPath();

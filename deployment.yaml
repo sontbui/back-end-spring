@@ -18,9 +18,9 @@ services:
 
   phpmyadmin8-container:
     #intel host for mac intel or window
-    # image: phpmyadmin/phpmyadmin
+#    image: phpmyadmin/phpmyadmin
     #mac m1 host
-    image: arm64v8/phpmyadmin     
+    image: arm64v8/phpmyadmin
     container_name: phpmyadmin8-container
     restart: always
     depends_on:

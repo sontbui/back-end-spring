@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Import;
 @SpringBootApplication
 //@ImportAutoConfiguration(AopAutoConfiguration.class)
 //@SpringBootApplication(exclude = KafkaAutoConfiguration.class), disable in "application.yml"
+
 public class ShopappApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ShopappApplication.class, args);

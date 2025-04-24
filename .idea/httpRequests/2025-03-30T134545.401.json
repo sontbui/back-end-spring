@@ -1,0 +1,6 @@
+{
+  "timestamp": 1743317145908,
+  "status": 401,
+  "error": "Unauthorized",
+  "path": "/api/v1/chat/hello"
+}

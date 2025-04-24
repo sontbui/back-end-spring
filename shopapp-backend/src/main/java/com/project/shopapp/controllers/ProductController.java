@@ -134,7 +134,7 @@ public class ProductController {
         @GetMapping("/images/{imageName}")
         public ResponseEntity<?> viewImage(@PathVariable String imageName) {
                 try {
-                        java.nio.file.Path imagePath = Paths.get("uploads/" + imageName);
+                        java.nio.file.Path imagePath = Paths.get("shopapp-backend/uploads/" + imageName);
                         UrlResource resource = new UrlResource(imagePath.toUri());
 
                         if (resource.exists()) {
