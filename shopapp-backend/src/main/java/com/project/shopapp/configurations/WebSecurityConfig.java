@@ -61,8 +61,8 @@ public class WebSecurityConfig {
                                     "/swagger-ui/**",
                                     "/swagger-ui.html",
                                     "/webjars/swagger-ui/**",
-                                    "/swagger-ui/index.html"
-
+                                    "/swagger-ui/index.html",
+                                    "/ws-chat" // Thêm endpoint WebSocket
                             )
                             .permitAll()
                             .requestMatchers(GET,
@@ -82,12 +82,17 @@ public class WebSecurityConfig {
 
                             .requestMatchers(GET,
                                     String.format("%s/order_details/**", apiPrefix)).permitAll()
+                            .requestMatchers(GET,
+                                    String.format("%s/chat/**", apiPrefix)).permitAll()
+                            .requestMatchers(GET,
+                                    String.format("%s/payment/**", apiPrefix)).permitAll()
 
                             .anyRequest()
                             .authenticated();
                             //.anyRequest().permitAll();
                 })
                 .csrf(AbstractHttpConfigurer::disable);
+
         http.securityMatcher(String.valueOf(EndpointRequest.toAnyEndpoint()));
         return http.build();
     }

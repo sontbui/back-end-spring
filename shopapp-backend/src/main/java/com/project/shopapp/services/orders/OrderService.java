@@ -1,9 +1,6 @@
 package com.project.shopapp.services.orders;
 
-import com.project.shopapp.dtos.CartItemDTO;
-import com.project.shopapp.dtos.OrderDTO;
-import com.project.shopapp.dtos.OrderDetailDTO;
-import com.project.shopapp.dtos.OrderWithDetailsDTO;
+import com.project.shopapp.dtos.*;
 import com.project.shopapp.exceptions.DataNotFoundException;
 import com.project.shopapp.models.*;
 import com.project.shopapp.repositories.*;
@@ -16,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -141,5 +139,49 @@ public class OrderService implements IOrderService{
     @Override
     public Page<Order> getOrdersByKeyword(String keyword, Pageable pageable) {
         return orderRepository.findByKeyword(keyword, pageable);
+    }
+
+    public List<OrderResponseDTO> getOrdersByUserId(Long userId) {
+        List<Order> orders = orderRepository.findByUserId(userId);
+        return orders.stream().map(this::mapToOrderResponseDTO).collect(Collectors.toList());
+    }
+
+    private OrderResponseDTO mapToOrderResponseDTO(Order order) {
+        List<OrderDetailFEDTO> orderDetailDTOs = order.getOrderDetails().stream()
+                .map(this::mapToOrderDetailDTO)
+                .collect(Collectors.toList());
+
+        return OrderResponseDTO.builder()
+                .id(order.getId())
+                .userId(order.getUser().getId())
+                .fullName(order.getFullName())
+                .email(order.getEmail())
+                .phoneNumber(order.getPhoneNumber())
+                .address(order.getAddress())
+                .note(order.getNote())
+                .orderDate(order.getOrderDate())
+                .status(order.getStatus())
+                .totalMoney(order.getTotalMoney())
+                .shippingMethod(order.getShippingMethod())
+                .shippingAddress(order.getShippingAddress())
+                .shippingDate(order.getShippingDate())
+                .trackingNumber(order.getTrackingNumber())
+                .paymentMethod(order.getPaymentMethod())
+                .active(order.getActive())
+                .orderDetails(orderDetailDTOs)
+                .build();
+    }
+
+    private OrderDetailFEDTO mapToOrderDetailDTO(OrderDetail orderDetail) {
+        return OrderDetailFEDTO.builder()
+                .id(orderDetail.getId())
+                .productId(orderDetail.getProduct().getId())
+                .productName(orderDetail.getProduct().getName())
+                .thumbnail(orderDetail.getProduct().getThumbnail())
+                .price(orderDetail.getPrice())
+                .numberOfProducts(orderDetail.getNumberOfProducts())
+                .totalMoney(orderDetail.getTotalMoney())
+                .color(orderDetail.getColor())
+                .build();
     }
 }
