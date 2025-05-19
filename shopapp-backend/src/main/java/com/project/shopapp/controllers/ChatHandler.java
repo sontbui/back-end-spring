@@ -5,6 +5,7 @@ import com.project.shopapp.dtos.ChatDTO;
 import com.project.shopapp.models.Chat;
 import com.project.shopapp.models.User;
 import com.project.shopapp.services.chat.ChatService;
+import com.project.shopapp.services.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
@@ -20,7 +21,6 @@ public class ChatHandler extends TextWebSocketHandler {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final List<WebSocketSession> sessions = new ArrayList<>();
-
     @Autowired
     private ChatService chatService;
 
@@ -35,7 +35,6 @@ public class ChatHandler extends TextWebSocketHandler {
         // Parse JSON thành ChatDTO
         ChatDTO chatMessage = objectMapper.readValue(message.getPayload(), ChatDTO.class);
         System.out.println("Received message from client: " + chatMessage.getContent());
-
         // Chuyển đổi ChatDTO thành Chat entity để lưu vào DB
         Chat chatEntity = Chat.builder()
                 .sender(User.builder().id(chatMessage.getSenderId()).build())

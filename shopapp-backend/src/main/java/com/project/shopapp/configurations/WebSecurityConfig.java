@@ -86,7 +86,6 @@ public class WebSecurityConfig {
                                     String.format("%s/chat/**", apiPrefix)).permitAll()
                             .requestMatchers(GET,
                                     String.format("%s/payment/**", apiPrefix)).permitAll()
-
                             .anyRequest()
                             .authenticated();
                             //.anyRequest().permitAll();

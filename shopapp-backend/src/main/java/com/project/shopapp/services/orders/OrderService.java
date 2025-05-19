@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -58,8 +59,13 @@ public class OrderService implements IOrderService{
             orderDetail.setProduct(product);
             orderDetail.setNumberOfProducts(quantity);
             orderDetail.setPrice(product.getPrice());
+
+            // ✅ Tính totalMoney cho từng order detail
+            float totalMoney = product.getPrice() *quantity;
+            orderDetail.setTotalMoney(totalMoney); // ✅ Thêm dòng này
             orderDetails.add(orderDetail);
         }
+
         orderDetailRepository.saveAll(orderDetails);
         //coupon
         String couponCode = orderDTO.getCouponCode();
@@ -139,6 +145,10 @@ public class OrderService implements IOrderService{
     @Override
     public Page<Order> getOrdersByKeyword(String keyword, Pageable pageable) {
         return orderRepository.findByKeyword(keyword, pageable);
+    }
+    @Override
+    public List<Order> getAllOrders() {
+        return orderRepository.findAll();
     }
 
     public List<OrderResponseDTO> getOrdersByUserId(Long userId) {

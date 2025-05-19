@@ -190,7 +190,6 @@ public class UserService implements IUserService{
     @Transactional
     public void resetPassword(Long userId, String newPassword)
             throws InvalidPasswordException, DataNotFoundException {
-        newPassword = "abc";
         User existingUser = userRepository.findById(userId)
                 .orElseThrow(() -> new DataNotFoundException("User not found"));
         String encodedPassword = passwordEncoder.encode(newPassword);

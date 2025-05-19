@@ -18,7 +18,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("${api.prefix}/orders")
@@ -62,6 +66,31 @@ public class OrderController {
                         .status(HttpStatus.OK)
                         .build());
     }
+    @GetMapping("/all")
+    public ResponseEntity<ResponseObject> getAllOrders() {
+        try {
+            List<OrderResponse> orderResponses = orderService.getAllOrders()
+                    .stream()
+                    .map(OrderResponse::fromOrder)
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.ok(ResponseObject.builder()
+                    .message("Get all orders successfully")
+                    .status(HttpStatus.OK)
+                    .data(orderResponses)
+                    .build());
+        } catch (Exception e) {
+            e.printStackTrace(); // In ra console log lỗi chi tiết
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                    ResponseObject.builder()
+                            .message("Server error: " + e.getMessage())
+                            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .data(null)
+                            .build()
+            );
+        }
+    }
+
     //GET http://localhost:8088/api/v1/orders/2
     @GetMapping("/{id}")
     public ResponseEntity<ResponseObject> getOrder(@Valid @PathVariable("id") Long orderId) {
@@ -115,10 +144,16 @@ public class OrderController {
         // Lấy tổng số trang
         int totalPages = orderPage.getTotalPages();
         List<OrderResponse> orderResponses = orderPage.getContent();
+        Map<String, Object> responseData = new HashMap<>();
+        responseData.put("orders", orderResponses);
+        responseData.put("totalPages", totalPages);
+        responseData.put("currentPage", page);
+        responseData.put("totalElements", orderPage.getTotalElements());
         return ResponseEntity.ok().body(ResponseObject.builder()
                 .message("Get orders successfully")
                 .status(HttpStatus.OK)
-                .data(orderResponses)
+                .data(responseData)
                 .build());
     }
+
 }

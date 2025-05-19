@@ -134,7 +134,7 @@ public class ProductController {
         @GetMapping("/images/{imageName}")
         public ResponseEntity<?> viewImage(@PathVariable String imageName) {
                 try {
-                        java.nio.file.Path imagePath = Paths.get("/Users/sontbui/Documents/workspace/do.an/back-end-spring/shopapp-backend/uploads/" + imageName);
+                        java.nio.file.Path imagePath = Paths.get("uploads/" + imageName);
                         UrlResource resource = new UrlResource(imagePath.toUri());
 
                         if (resource.exists()) {
@@ -144,7 +144,7 @@ public class ProductController {
                         } else {
                                 return ResponseEntity.ok()
                                                 .contentType(MediaType.IMAGE_JPEG)
-                                                .body(new UrlResource(Paths.get("uploads/notfound.jpeg").toUri()));
+                                                .body(new UrlResource(Paths.get("uploads/notfound.jpg").toUri()));
                                 // return ResponseEntity.notFound().build();
                         }
                 } catch (Exception e) {
@@ -173,7 +173,7 @@ public class ProductController {
                 }
                 if (productResponses == null) {
                         Page<ProductResponse> productPage = productService
-                                        .getAllProducts(keyword, categoryId, pageRequest);                      
+                                        .getAllProducts(keyword, categoryId, pageRequest);
                         totalPages = productPage.getTotalPages();
                         productResponses = productPage.getContent();
                         for (ProductResponse product : productResponses) {

@@ -197,7 +197,7 @@ public class UserController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<ResponseObject> resetPassword(@Valid @PathVariable long userId){
         try {
-            String newPassword = UUID.randomUUID().toString().substring(0, 5);
+            String newPassword = "123123";
             userService.resetPassword(userId, newPassword);
             return ResponseEntity.ok(ResponseObject.builder()
                             .message("Reset password successfully")
